@@ -1,16 +1,26 @@
 package route
 
 import (
-	"go-vue/common/constant"
+	"fmt"
 	"testing"
 )
 
-func testget(t *testing.T) {
+func Test(t *testing.T) {
 	ruu := New()
-	ruu.GET("/test1", handle1)
-	ruu.RUN("8888")
+	ruu.Use(Logger())
+	ruu.GET("/v1/hello", func(ctx *Context) {
+		ctx.String(200, "hello %s\n", "john")
+	})
+	ruu.GET("/v1/world", func(ctx *Context) {
+		ctx.String(200, "hello %s\n", "alex")
+	})
+	ruu.Run(":80")
 }
 
-func handle1(ctx *Context) {
-	ctx.String(int(constant.SUCCESS), "", "fucking jobless")
+func Logger() HandlerFunc {
+	return func(c *Context) {
+		fmt.Println("logger............")
+		c.Next()
+		fmt.Println("hahahaha")
+	}
 }

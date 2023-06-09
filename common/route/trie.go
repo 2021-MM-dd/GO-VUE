@@ -15,7 +15,7 @@ func (n *node) insert(path string, parts []string, height int) {
 	part := parts[height]
 	sub := n.matchSub(part)
 	if sub == nil {
-		sub := &node{part: part}
+		sub = &node{part: part}
 		n.sub = append(n.sub, sub)
 		//可以用n.path是否为空来判断是否处于根节点
 	}

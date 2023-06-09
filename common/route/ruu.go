@@ -9,11 +9,17 @@ type HandlerFunc func(ctx *Context)
 
 type Ruu struct {
 	router *router
+	middle []HandlerFunc
 }
 
 func (r *Ruu) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	c := newContext(writer, request)
+	c.handlers = append(c.handlers, r.middle...)
 	r.router.handle(c)
+}
+
+func (r *Ruu) Use(middlewares ...HandlerFunc) {
+	r.middle = append(r.middle, middlewares...)
 }
 
 func (r *Ruu) GET(path string, handler HandlerFunc) {
@@ -29,7 +35,7 @@ func (r *Ruu) addRoute(method string, pattern string, handler HandlerFunc) {
 	r.router.addRoute(method, pattern, handler)
 }
 
-func (r *Ruu) RUN(addr string) (err error) {
+func (r *Ruu) Run(addr string) (err error) {
 	return http.ListenAndServe(addr, r)
 }
 
