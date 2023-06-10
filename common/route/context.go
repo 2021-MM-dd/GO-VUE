@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+type H map[string]interface{}
+
 type Context struct {
 	Writer     http.ResponseWriter
 	Request    *http.Request
@@ -70,4 +72,9 @@ func (c *Context) JSON(code int, obj interface{}) {
 func (c *Context) Data(code int, data []byte) {
 	c.SetStatus(code)
 	c.Writer.Write(data)
+}
+
+func (c *Context) Fail(code int, err string) {
+	c.index = len(c.handlers)
+	c.JSON(code, H{"message": err})
 }
